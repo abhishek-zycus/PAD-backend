@@ -4,12 +4,14 @@ import registerRoute from "./router/registerRoute.js";
 import loginRoute from "./router/loginRoute.js";
 import dashboardRoute from "./router/dashboardRoute.js";
 import cors from "cors";
+import mongoose from "mongoose";
 import dbConnection from "./db/connection.js";
 
 dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors());
+mongoose.set("strictQuery", true);
 dbConnection(process.env.MONGO_URI);
 
 app.use("/api/register", registerRoute);

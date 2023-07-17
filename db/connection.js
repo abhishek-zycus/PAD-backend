@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
+// import AutoIncrementFactory from "mongoose-sequence";
 
-const dbConnection = (MongoURI) =>
+// const AutoIncrement = AutoIncrementFactory(mongoose);
+
+const dbConnection = (MongoURI) => {
   mongoose
     .connect(MongoURI, {
       useNewUrlParser: true,
@@ -12,5 +15,5 @@ const dbConnection = (MongoURI) =>
     .catch((err) => {
       console.log(err);
     });
-
+};
 export default dbConnection;

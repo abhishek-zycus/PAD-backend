@@ -1,4 +1,7 @@
 import mongoose, { Schema } from "mongoose";
+import AutoIncrementFactory from "mongoose-sequence";
+
+const AutoIncrement = AutoIncrementFactory(mongoose);
 
 const UserScheme = new Schema(
   {
@@ -9,7 +12,7 @@ const UserScheme = new Schema(
   },
   { timestamps: true }
 );
-
+UserScheme.plugin(AutoIncrement, { inc_field: "userId" });
 const User = mongoose.model("User", UserScheme);
 
 export default User;

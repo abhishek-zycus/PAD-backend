@@ -52,7 +52,7 @@ export const postRegister = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log("Api error : postRegisterController", error);
+    console.log("Api error : postRegisterController : ", error);
     return res.status(500).json({
       success: false,
       err: "Server error!",
