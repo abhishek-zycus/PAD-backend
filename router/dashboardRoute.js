@@ -1,14 +1,19 @@
 import express from "express";
 import {
   getDashboardData,
-  getDashboardDat,
   setContractData,
 } from "../controller/dashboardController.js";
+import passport from "passport";
+import passportConfig from "../passport/pasportJWT.js";
 
+passportConfig();
 const router = express.Router();
 
-router.get("/", getDashboardData);
-router.post("/", getDashboardDat);
+router.get(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  getDashboardData
+);
 router.post("/addContract", setContractData);
 
 export default router;

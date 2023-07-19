@@ -1,8 +1,13 @@
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
-import User from "../model/user";
-var opts = {};
-opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = process.env.JWT_SECRET;
+import User from "../model/user.js";
+import passport from "passport";
+import dotenv from "dotenv";
+dotenv.config();
+
+var opts = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: process.env.JWT_SECRET,
+};
 const initializePassport = () => {
   passport.use(
     new JwtStrategy(opts, function (jwt_payload, done) {
@@ -11,10 +16,9 @@ const initializePassport = () => {
           return done(err, false);
         }
         if (user) {
-          return done(null, user);
+          return done(null, { id: user.id, role: user.role });
         } else {
           return done(null, false);
-          // or you could create a new account
         }
       });
     })

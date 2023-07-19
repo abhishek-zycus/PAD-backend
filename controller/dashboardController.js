@@ -1,42 +1,64 @@
-import companyContractData from "../constants/companyContractData.js";
+// import companyContractData from "../constants/companyContractData.js";
 import Contract from "../model/contract.js";
 import { generateContractObject } from "../util/generateContract.js";
 
 export const getDashboardData = async (req, res) => {
   try {
-    let totalRevenue = 0;
-    companyContractData.map((item) => {
-      totalRevenue += item.payment;
-    });
-    const avgRevenue = totalRevenue / companyContractData.length;
-    const data = {
-      numberOfContracts: companyContractData.length,
-      avgRevenue,
-      totalRevenue,
-      data: companyContractData,
+    const contracts = await Contract.find({ userId: req.user.id });
+    // console.log(contracts);
+    let totalExpectedRevenue = 0;
+    let totalDueAmount = 0;
+    let top5CompanyByPayment = {
+      companyName: [],
+      correspondingPayment: [],
     };
-    res.status(200).json(data);
-  } catch (error) {
-    console.log(error);
-  }
-};
+    let top5CompanyByDuePayment = {
+      companyName: [],
+      correspondingDuePayment: [],
+      correspondingPayment: [],
+    };
 
-export const getDashboardDat = async (req, res) => {
-  try {
-    let totalRevenue = 0;
-    companyContractData.map((item) => {
-      totalRevenue += item.payment;
+    contracts.map((item) => {
+      totalExpectedRevenue += item.expectedPayment;
+      totalDueAmount += item.duePayment;
     });
-    const avgRevenue = totalRevenue / companyContractData.length;
+
+    contracts.sort((a, b) => (a.expectedPayment > b.expectedPayment ? -1 : 1));
+    let top5 = contracts.slice(0, 5);
+
+    top5.map((con) => {
+      top5CompanyByPayment.companyName.push(con.companyName);
+      top5CompanyByPayment.correspondingPayment.push(con.expectedPayment);
+    });
+
+    contracts.sort((a, b) => (a.duePayment > b.duePayment ? -1 : 1));
+    top5 = contracts.slice(0, 5);
+
+    top5.map((con) => {
+      top5CompanyByDuePayment.companyName.push(con.companyName);
+      top5CompanyByDuePayment.correspondingDuePayment.push(con.duePayment);
+      top5CompanyByDuePayment.correspondingPayment.push(con.expectedPayment);
+    });
+
+    const avgRevenue = Math.floor(totalExpectedRevenue / contracts.length);
     const data = {
-      numberOfContracts: companyContractData.length,
+      numberOfContracts: contracts.length,
       avgRevenue,
-      totalRevenue,
-      data: companyContractData,
+      totalExpectedRevenue,
+      totalDueAmount,
+      top5CompanyByPayment,
+      top5CompanyByDuePayment,
     };
-    res.status(200).json(data);
+    return res.status(200).json({
+      success: true,
+      data,
+    });
   } catch (error) {
     console.log(error);
+    return res.status(500).json({
+      success: false,
+      err: "Server error!",
+    });
   }
 };
 

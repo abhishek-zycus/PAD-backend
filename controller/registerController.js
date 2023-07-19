@@ -15,7 +15,7 @@ export const postRegister = async (req, res) => {
       return res.status(400).json({ success: false, err: errors.array() });
     }
 
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     const userAlreadyExits = await User.findOne({ email: email });
     if (!userAlreadyExits) {
@@ -24,7 +24,7 @@ export const postRegister = async (req, res) => {
         name,
         password: hashpass,
         email,
-        role: "NORMAL",
+        role,
       });
       const saveuser = await newUser.save();
 
@@ -32,6 +32,7 @@ export const postRegister = async (req, res) => {
         {
           name: saveuser.name,
           id: saveuser.id,
+          role: saveuser.role,
         },
         process.env.JWT_SECRET
       );

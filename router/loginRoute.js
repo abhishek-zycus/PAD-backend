@@ -14,7 +14,6 @@ router.post(
       .isEmpty()
       .isLength({ min: 8 }),
   ],
-  passport.authenticate("jwt", { session: false }),
   postLogin
 );
 
