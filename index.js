@@ -23,7 +23,7 @@ app.use("/", (req, res) => {
   res.status(200).json({ message: "PAD Backend is running" });
 });
 
-app.use((error, req, res, next) => {
+app.use((error, req, res) => {
   if (!error.statusCode) error.statusCode = 500;
   if (!error.message) error.message = "Server side error";
   const status = error.statusCode;
@@ -36,3 +36,5 @@ app.use((error, req, res, next) => {
 app.listen(process.env.PORT, () => {
   console.log(`App is running at port ${process.env.PORT}`);
 });
+
+export default app;

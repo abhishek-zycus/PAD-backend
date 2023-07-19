@@ -1,11 +1,21 @@
 // import companyContractData from "../constants/companyContractData.js";
+import axios from "axios";
 import Contract from "../model/contract.js";
 import { generateContractObject } from "../util/generateContract.js";
 
 export const getDashboardData = async (req, res) => {
   try {
-    const contracts = await Contract.find({ userId: req.user.id });
-    // console.log(contracts);
+    let contracts = await Contract.find({ userId: req.user.id });
+    if (!contracts.length) {
+      contracts = await axios.post(
+        "http://localhost:5000/api/dashboard/addContract",
+        {
+          noOfContracts: Math.floor(Math.random() * 11) + 5,
+          userId: req.user.id,
+        }
+      );
+      contracts = await Contract.find({ userId: req.user.id });
+    }
     let totalExpectedRevenue = 0;
     let totalDueAmount = 0;
     let top5CompanyByPayment = {
@@ -65,12 +75,11 @@ export const getDashboardData = async (req, res) => {
 export const setContractData = async (req, res) => {
   try {
     const { noOfContracts, userId } = req.body;
-    // console.log(noOfContracts, userId);
     var returnValue = [];
     if (noOfContracts > 0 && noOfContracts <= 1) {
       const newContract = new Contract(generateContractObject(userId));
       const saveContract = await newContract.save();
-      console.log(saveContract);
+      // console.log(saveContract);
       return res.status(200).json({
         success: true,
         data: saveContract,

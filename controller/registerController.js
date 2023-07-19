@@ -1,7 +1,7 @@
 import User from "../model/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { validationResult, query } from "express-validator";
+import { validationResult } from "express-validator";
 
 // FOR USER TO SIGNUP ACCOUNT
 // METHOD : POST

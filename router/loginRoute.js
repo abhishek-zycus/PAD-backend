@@ -1,7 +1,6 @@
 import express from "express";
 import { postLogin } from "../controller/loginController.js";
 import { body } from "express-validator";
-import passport from "passport";
 
 const router = express.Router();
 

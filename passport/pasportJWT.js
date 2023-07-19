@@ -11,12 +11,14 @@ var opts = {
 const initializePassport = () => {
   passport.use(
     new JwtStrategy(opts, function (jwt_payload, done) {
-      User.findOne({ id: jwt_payload.id }, function (err, user) {
+      // console.log(jwt_payload);
+      User.findOne({ _id: jwt_payload.id }, function (err, user) {
         if (err) {
           return done(err, false);
         }
         if (user) {
-          return done(null, { id: user.id, role: user.role });
+          // console.log(user);
+          return done(null, { id: user.id, role: user.role, name: user.name });
         } else {
           return done(null, false);
         }

@@ -6,15 +6,19 @@ import chaiHttp from "chai-http";
 chai.should();
 chai.use(chaiHttp);
 
-describe("POST: Login check ", () => {
+describe("POST: Register check ", () => {
   const requests = chai.request("http://localhost:5000");
-  it("login should be okay", (done) => {
+  it("Register should be okay", (done) => {
     requests
-      .post("/api/login")
-      .send({ email: "kumar.abhishek@zycus.com", password: "11111111" })
+      .post("/api/register")
+      .send({
+        email: "kumar1.abhishek@zycus.com",
+        password: "11111111",
+        name: "Ram",
+        role: "NORMAL",
+      })
       .end(function (err, res) {
         if (err) return done(err);
-        // console.log(res);
         res.should.have.status(200);
         res.body.should.be.an("object");
         res.body.token.length.should.not.equal(0);
