@@ -13,6 +13,7 @@ router.post(
       .not()
       .isEmpty()
       .isLength({ min: 8 }),
+    body("role", "invalid role type").not().isEmpty().isString(),
   ],
   postRegister
 );

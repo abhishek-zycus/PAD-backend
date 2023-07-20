@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import registerRoute from "./router/registerRoute.js";
 import loginRoute from "./router/loginRoute.js";
+import roleRoute from "./router/roleRoute.js";
 import dashboardRoute from "./router/dashboardRoute.js";
 import cors from "cors";
 import mongoose from "mongoose";
@@ -19,6 +20,7 @@ app.use(passport.initialize());
 app.use("/api/register", registerRoute);
 app.use("/api/login", loginRoute);
 app.use("/api/dashboard", dashboardRoute);
+app.use("/api/role", roleRoute);
 app.use("/", (req, res) => {
   res.status(200).json({ message: "PAD Backend is running" });
 });

@@ -2,18 +2,16 @@
 import axios from "axios";
 import Contract from "../model/contract.js";
 import { generateContractObject } from "../util/generateContract.js";
+import Role from "../model/role.js";
 
 export const getDashboardData = async (req, res) => {
   try {
     let contracts = await Contract.find({ userId: req.user.id });
     if (!contracts.length) {
-      contracts = await axios.post(
-        "http://localhost:5000/api/dashboard/addContract",
-        {
-          noOfContracts: Math.floor(Math.random() * 11) + 5,
-          userId: req.user.id,
-        }
-      );
+      contracts = await axios.post(process.env.ENDPOINT, {
+        noOfContracts: Math.floor(Math.random() * 11) + 5,
+        userId: req.user.id,
+      });
       contracts = await Contract.find({ userId: req.user.id });
     }
     let totalExpectedRevenue = 0;
@@ -51,45 +49,62 @@ export const getDashboardData = async (req, res) => {
     });
 
     const avgRevenue = Math.floor(totalExpectedRevenue / contracts.length);
+    const role = await Role.findById(req.user.role);
+    const permissions = role.permissions;
     let data = {};
-    if (req.user.role === "ADMIN") {
-      data = {
-        numberOfContracts: contracts.length,
-        avgRevenue,
-        totalExpectedRevenue,
-        totalDueAmount,
-        top5CompanyByPayment,
-        top5CompanyByDuePayment,
-      };
-    } else if (req.user.role === "NORMAL") {
-      data = {
-        // numberOfContracts: contracts.length,
-        avgRevenue,
-        totalExpectedRevenue,
-        totalDueAmount,
-        top5CompanyByPayment,
-        top5CompanyByDuePayment,
-      };
-    } else if (req.user.role === "ANALYST") {
-      data = {
-        numberOfContracts: contracts.length,
-        // avgRevenue,
-        totalExpectedRevenue,
-        totalDueAmount,
-        top5CompanyByPayment,
-        top5CompanyByDuePayment,
-      };
-    } else {
-      data = {
-        numberOfContracts: contracts.length,
-        avgRevenue,
-        totalExpectedRevenue,
-        // totalDueAmount,
-        top5CompanyByPayment,
-        top5CompanyByDuePayment,
-      };
+    if (permissions.isAvgRevenueVisible) {
+      data.avgRevenue = avgRevenue;
     }
-    console.log(data);
+    if (permissions.isTotalContractVisible) {
+      data.numberOfContracts = contracts.length;
+    }
+    if (permissions.isTotalDuePaymentVisible) {
+      data.totalDueAmount = totalDueAmount;
+    }
+    if (permissions.isTotalExpectedPaymentVisible) {
+      data.totalExpectedRevenue = totalExpectedRevenue;
+    }
+    data.top5CompanyByPayment = top5CompanyByPayment;
+    data.top5CompanyByDuePayment = top5CompanyByDuePayment;
+
+    // if (req.user.role === "ADMIN") {
+    //   data = {
+    //     numberOfContracts: contracts.length,
+    //     avgRevenue,
+    //     totalExpectedRevenue,
+    //     totalDueAmount,
+    //     top5CompanyByPayment,
+    //     top5CompanyByDuePayment,
+    //   };
+    // } else if (req.user.role === "NORMAL") {
+    //   data = {
+    //     // numberOfContracts: contracts.length,
+    //     avgRevenue,
+    //     totalExpectedRevenue,
+    //     totalDueAmount,
+    //     top5CompanyByPayment,
+    //     top5CompanyByDuePayment,
+    //   };
+    // } else if (req.user.role === "ANALYST") {
+    //   data = {
+    //     numberOfContracts: contracts.length,
+    //     // avgRevenue,
+    //     totalExpectedRevenue,
+    //     totalDueAmount,
+    //     top5CompanyByPayment,
+    //     top5CompanyByDuePayment,
+    //   };
+    // } else {
+    //   data = {
+    //     numberOfContracts: contracts.length,
+    //     avgRevenue,
+    //     totalExpectedRevenue,
+    //     // totalDueAmount,
+    //     top5CompanyByPayment,
+    //     top5CompanyByDuePayment,
+    //   };
+    // }
+    // console.log(data);
     return res.status(200).json({
       success: true,
       data,

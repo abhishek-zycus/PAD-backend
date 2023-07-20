@@ -15,7 +15,7 @@ export const postRegister = async (req, res) => {
       return res.status(400).json({ success: false, err: errors.array() });
     }
 
-    const { name, email, password, role } = req.body;
+    let { name, email, password, role } = req.body;
 
     const userAlreadyExits = await User.findOne({ email: email });
     if (!userAlreadyExits) {

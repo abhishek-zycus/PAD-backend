@@ -7,7 +7,10 @@ const UserScheme = new Schema(
   {
     name: String,
     password: String,
-    role: String,
+    role: {
+      type: mongoose.Types.ObjectId,
+      ref: "Role",
+    },
     email: String,
   },
   { timestamps: true }
