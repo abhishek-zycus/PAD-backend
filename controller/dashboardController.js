@@ -51,14 +51,45 @@ export const getDashboardData = async (req, res) => {
     });
 
     const avgRevenue = Math.floor(totalExpectedRevenue / contracts.length);
-    const data = {
-      numberOfContracts: contracts.length,
-      avgRevenue,
-      totalExpectedRevenue,
-      totalDueAmount,
-      top5CompanyByPayment,
-      top5CompanyByDuePayment,
-    };
+    let data = {};
+    if (req.user.role === "ADMIN") {
+      data = {
+        numberOfContracts: contracts.length,
+        avgRevenue,
+        totalExpectedRevenue,
+        totalDueAmount,
+        top5CompanyByPayment,
+        top5CompanyByDuePayment,
+      };
+    } else if (req.user.role === "NORMAL") {
+      data = {
+        // numberOfContracts: contracts.length,
+        avgRevenue,
+        totalExpectedRevenue,
+        totalDueAmount,
+        top5CompanyByPayment,
+        top5CompanyByDuePayment,
+      };
+    } else if (req.user.role === "ANALYST") {
+      data = {
+        numberOfContracts: contracts.length,
+        // avgRevenue,
+        totalExpectedRevenue,
+        totalDueAmount,
+        top5CompanyByPayment,
+        top5CompanyByDuePayment,
+      };
+    } else {
+      data = {
+        numberOfContracts: contracts.length,
+        avgRevenue,
+        totalExpectedRevenue,
+        // totalDueAmount,
+        top5CompanyByPayment,
+        top5CompanyByDuePayment,
+      };
+    }
+    console.log(data);
     return res.status(200).json({
       success: true,
       data,
@@ -75,11 +106,12 @@ export const getDashboardData = async (req, res) => {
 export const setContractData = async (req, res) => {
   try {
     const { noOfContracts, userId } = req.body;
+    // console.log(noOfContracts, userId);
     var returnValue = [];
     if (noOfContracts > 0 && noOfContracts <= 1) {
       const newContract = new Contract(generateContractObject(userId));
       const saveContract = await newContract.save();
-      // console.log(saveContract);
+      console.log(saveContract);
       return res.status(200).json({
         success: true,
         data: saveContract,
