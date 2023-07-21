@@ -67,44 +67,6 @@ export const getDashboardData = async (req, res) => {
     data.top5CompanyByPayment = top5CompanyByPayment;
     data.top5CompanyByDuePayment = top5CompanyByDuePayment;
 
-    // if (req.user.role === "ADMIN") {
-    //   data = {
-    //     numberOfContracts: contracts.length,
-    //     avgRevenue,
-    //     totalExpectedRevenue,
-    //     totalDueAmount,
-    //     top5CompanyByPayment,
-    //     top5CompanyByDuePayment,
-    //   };
-    // } else if (req.user.role === "NORMAL") {
-    //   data = {
-    //     // numberOfContracts: contracts.length,
-    //     avgRevenue,
-    //     totalExpectedRevenue,
-    //     totalDueAmount,
-    //     top5CompanyByPayment,
-    //     top5CompanyByDuePayment,
-    //   };
-    // } else if (req.user.role === "ANALYST") {
-    //   data = {
-    //     numberOfContracts: contracts.length,
-    //     // avgRevenue,
-    //     totalExpectedRevenue,
-    //     totalDueAmount,
-    //     top5CompanyByPayment,
-    //     top5CompanyByDuePayment,
-    //   };
-    // } else {
-    //   data = {
-    //     numberOfContracts: contracts.length,
-    //     avgRevenue,
-    //     totalExpectedRevenue,
-    //     // totalDueAmount,
-    //     top5CompanyByPayment,
-    //     top5CompanyByDuePayment,
-    //   };
-    // }
-    // console.log(data);
     return res.status(200).json({
       success: true,
       data,

@@ -20,12 +20,18 @@ export const getAllRoles = async (req, res) => {
 
 export const addNewRole = async (req, res) => {
   try {
-    // console.log(req.body);
+    const role = await Role.findById(req.user.role);
+    if (!role.permissions.canCreateRole) {
+      return res.status(402).json({
+        success: false,
+        err: "Permission denied!",
+      });
+    }
     const isRoleNameAlreadyPresent = await Role.findOne({
       roleName: req.body.roleName,
     });
     if (isRoleNameAlreadyPresent) {
-      res.status(401).json({
+      return res.status(401).json({
         success: false,
         error: "Role name already present",
       });

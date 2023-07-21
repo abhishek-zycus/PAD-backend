@@ -6,16 +6,17 @@ import chaiHttp from "chai-http";
 chai.should();
 chai.use(chaiHttp);
 
+const random = Math.floor(Math.random() * 1000);
 describe("POST: Register check ", () => {
   const requests = chai.request("http://localhost:5000");
   it("Register should be okay", (done) => {
     requests
       .post("/api/register")
       .send({
-        email: "kumar1.abhishek@zycus.com",
+        email: `testing.${random}@zycus.com`,
         password: "11111111",
         name: "Ram",
-        role: "NORMAL",
+        role: "64b95cf5fc00f3a2b756e0f1",
       })
       .end(function (err, res) {
         if (err) return done(err);
